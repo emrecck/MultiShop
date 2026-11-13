@@ -1,0 +1,94 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MultiShop.Catalog.Dtos.ProductDetailDtos;
+using MultiShop.Catalog.Services.ProductDetailServices;
+
+namespace MultiShop.Catalog.Controllers;
+
+[ApiController]
+[Route("api/product-details")]
+public sealed class ProductDetailsController : ControllerBase
+{
+    private readonly IProductDetailService _productDetailService;
+
+    public ProductDetailsController(IProductDetailService productDetailService)
+    {
+        _productDetailService = productDetailService;
+    }
+
+    [HttpGet]
+    [EndpointSummary("Get all product details")]
+    [ProducesResponseType(typeof(IEnumerable<ResultProductDetailDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ResultProductDetailDto>>> GetAll(CancellationToken cancellationToken)
+    {
+        var productDetails = await _productDetailService.GetAllProductDetailsAsync(cancellationToken);
+        return Ok(productDetails);
+    }
+
+    [HttpGet("{id}")]
+    [EndpointSummary("Get product details by ID")]
+    [ProducesResponseType(typeof(GetByIdProductDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetByIdProductDetailDto>> GetById(
+        [RegularExpression("^[0-9a-fA-F]{24}$")] string id,
+        CancellationToken cancellationToken)
+    {
+        var productDetail = await _productDetailService.GetProductDetailByIdAsync(id, cancellationToken);
+        return productDetail is null ? NotFound() : Ok(productDetail);
+    }
+
+    [HttpPost]
+    [EndpointSummary("Create product details")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateProductDetailDto productDetail,
+        CancellationToken cancellationToken)
+    {
+        if (!ObjectId.TryParse(productDetail.ProductDetailId, out _))
+        {
+            ModelState.AddModelError(
+                nameof(productDetail.ProductDetailId),
+                "The product detail ID must be a valid 24-character hexadecimal MongoDB ObjectId.");
+            return ValidationProblem(ModelState);
+        }
+
+        var id = await _productDetailService.CreateProductDetailAsync(productDetail, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id }, value: null);
+    }
+
+    [HttpPut("{id}")]
+    [EndpointSummary("Update product details")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(
+        [RegularExpression("^[0-9a-fA-F]{24}$")] string id,
+        [FromBody] UpdateProductDetailDto productDetail,
+        CancellationToken cancellationToken)
+    {
+        if (!string.Equals(id, productDetail.ProductDetailId, StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.AddModelError(
+                nameof(productDetail.ProductDetailId),
+                "The route ID must match the request body ID.");
+            return ValidationProblem(ModelState);
+        }
+
+        var updated = await _productDetailService.UpdateProductDetailAsync(productDetail, cancellationToken);
+        return updated ? Ok() : NotFound();
+    }
+
+    [HttpDelete("{id}")]
+    [EndpointSummary("Delete product details")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        [RegularExpression("^[0-9a-fA-F]{24}$")] string id,
+        CancellationToken cancellationToken)
+    {
+        var deleted = await _productDetailService.DeleteProductDetailAsync(id, cancellationToken);
+        return deleted ? NoContent() : NotFound();
+    }
+}

@@ -1,0 +1,149 @@
+@MultiShop.Catalog_HostAddress = http://localhost:5030
+
+### Categories: list
+GET {{MultiShop.Catalog_HostAddress}}/api/categories
+Accept: application/json
+
+### Categories: get by ID
+GET {{MultiShop.Catalog_HostAddress}}/api/categories/64b000000000000000000001
+Accept: application/json
+
+### Categories: not found
+GET {{MultiShop.Catalog_HostAddress}}/api/categories/000000000000000000000000
+Accept: application/json
+
+### Categories: create
+POST {{MultiShop.Catalog_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Electronics"
+}
+
+### Categories: update
+PUT {{MultiShop.Catalog_HostAddress}}/api/categories/64b000000000000000000001
+Content-Type: application/json
+
+{
+  "id": "64b000000000000000000001",
+  "name": "Home Electronics"
+}
+
+### Categories: delete
+DELETE {{MultiShop.Catalog_HostAddress}}/api/categories/64b000000000000000000001
+
+### Products: list
+GET {{MultiShop.Catalog_HostAddress}}/api/products
+Accept: application/json
+
+### Products: get by ID
+GET {{MultiShop.Catalog_HostAddress}}/api/products/64b000000000000000000002
+Accept: application/json
+
+### Products: not found
+GET {{MultiShop.Catalog_HostAddress}}/api/products/000000000000000000000000
+Accept: application/json
+
+### Products: create
+POST {{MultiShop.Catalog_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Wireless Mouse",
+  "price": 29.99,
+  "description": "Ergonomic wireless mouse",
+  "imageUrl": "https://example.com/mouse.jpg",
+  "categoryId": "64b000000000000000000001"
+}
+
+### Products: update
+PUT {{MultiShop.Catalog_HostAddress}}/api/products/64b000000000000000000002
+Content-Type: application/json
+
+{
+  "productId": "64b000000000000000000002",
+  "productName": "Wireless Mouse",
+  "productDescription": "Updated ergonomic wireless mouse",
+  "productPrice": 34.99,
+  "productImageUrl": "https://example.com/mouse.jpg",
+  "productStock": 25,
+  "categoryId": "64b000000000000000000001"
+}
+
+### Products: delete
+DELETE {{MultiShop.Catalog_HostAddress}}/api/products/64b000000000000000000002
+
+### Product details: list
+GET {{MultiShop.Catalog_HostAddress}}/api/product-details
+Accept: application/json
+
+### Product details: get by ID
+GET {{MultiShop.Catalog_HostAddress}}/api/product-details/64b000000000000000000003
+Accept: application/json
+
+### Product details: not found
+GET {{MultiShop.Catalog_HostAddress}}/api/product-details/000000000000000000000000
+Accept: application/json
+
+### Product details: create
+POST {{MultiShop.Catalog_HostAddress}}/api/product-details
+Content-Type: application/json
+
+{
+  "productDetailId": "64b000000000000000000003",
+  "productId": "64b000000000000000000002",
+  "productDetailDescription": "Compact wireless mouse",
+  "productDetailInfo": "Includes a USB receiver"
+}
+
+### Product details: update
+PUT {{MultiShop.Catalog_HostAddress}}/api/product-details/64b000000000000000000003
+Content-Type: application/json
+
+{
+  "productDetailId": "64b000000000000000000003",
+  "productDetailDescription": "Updated compact wireless mouse",
+  "productDetailInfo": "Includes a USB receiver and batteries",
+  "productId": "64b000000000000000000002"
+}
+
+### Product details: delete
+DELETE {{MultiShop.Catalog_HostAddress}}/api/product-details/64b000000000000000000003
+
+### Product images: list
+GET {{MultiShop.Catalog_HostAddress}}/api/product-images
+Accept: application/json
+
+### Product images: get by ID
+GET {{MultiShop.Catalog_HostAddress}}/api/product-images/64b000000000000000000004
+Accept: application/json
+
+### Product images: not found
+GET {{MultiShop.Catalog_HostAddress}}/api/product-images/000000000000000000000000
+Accept: application/json
+
+### Product images: create
+POST {{MultiShop.Catalog_HostAddress}}/api/product-images
+Content-Type: application/json
+
+{
+  "productId": "64b000000000000000000002",
+  "image1": "https://example.com/mouse-front.jpg",
+  "image2": "https://example.com/mouse-side.jpg",
+  "image3": "https://example.com/mouse-package.jpg"
+}
+
+### Product images: update
+PUT {{MultiShop.Catalog_HostAddress}}/api/product-images/64b000000000000000000004
+Content-Type: application/json
+
+{
+  "id": "64b000000000000000000004",
+  "image1": "https://example.com/mouse-front-new.jpg",
+  "image2": "https://example.com/mouse-side-new.jpg",
+  "image3": "https://example.com/mouse-package-new.jpg",
+  "productId": "64b000000000000000000002"
+}
+
+### Product images: delete
+DELETE {{MultiShop.Catalog_HostAddress}}/api/product-images/64b000000000000000000004

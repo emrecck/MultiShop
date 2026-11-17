@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET build outputs
+**/bin/
+**/obj/
+artifacts/
+TestResults/
+
+# IDE and local tooling
+.idea/
+*.rsuser

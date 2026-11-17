@@ -1,0 +1,34 @@
+@MultiShop.Discount_HostAddress = http://localhost:5030
+
+### Get all coupons
+GET {{MultiShop.Discount_HostAddress}}/api/coupons
+Accept: application/json
+
+### Get a coupon by ID
+GET {{MultiShop.Discount_HostAddress}}/api/coupons/1
+Accept: application/json
+
+### Create a coupon
+POST {{MultiShop.Discount_HostAddress}}/api/coupons
+Content-Type: application/json
+
+{
+  "code": "SUMMER10",
+  "discountAmount": 10,
+  "expirationDate": "2027-08-31T23:59:59+00:00",
+  "isActive": true
+}
+
+### Update a coupon
+PUT {{MultiShop.Discount_HostAddress}}/api/coupons/1
+Content-Type: application/json
+
+{
+  "code": "SUMMER15",
+  "discountAmount": 15,
+  "expirationDate": "2027-08-31T23:59:59+00:00",
+  "isActive": true
+}
+
+### Delete a coupon
+DELETE {{MultiShop.Discount_HostAddress}}/api/coupons/1

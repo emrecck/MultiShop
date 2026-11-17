@@ -46,14 +46,6 @@ public sealed class ProductDetailsController : ControllerBase
         [FromBody] CreateProductDetailDto productDetail,
         CancellationToken cancellationToken)
     {
-        if (!ObjectId.TryParse(productDetail.ProductDetailId, out _))
-        {
-            ModelState.AddModelError(
-                nameof(productDetail.ProductDetailId),
-                "The product detail ID must be a valid 24-character hexadecimal MongoDB ObjectId.");
-            return ValidationProblem(ModelState);
-        }
-
         var id = await _productDetailService.CreateProductDetailAsync(productDetail, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id }, value: null);
     }
@@ -68,14 +60,6 @@ public sealed class ProductDetailsController : ControllerBase
         [FromBody] UpdateProductDetailDto productDetail,
         CancellationToken cancellationToken)
     {
-        if (!string.Equals(id, productDetail.ProductDetailId, StringComparison.OrdinalIgnoreCase))
-        {
-            ModelState.AddModelError(
-                nameof(productDetail.ProductDetailId),
-                "The route ID must match the request body ID.");
-            return ValidationProblem(ModelState);
-        }
-
         var updated = await _productDetailService.UpdateProductDetailAsync(productDetail, cancellationToken);
         return updated ? Ok() : NotFound();
     }

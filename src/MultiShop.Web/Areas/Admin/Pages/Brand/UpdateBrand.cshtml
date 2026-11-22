@@ -1,0 +1,36 @@
+@page "/Admin/Brand/UpdateBrand/{id}"
+@model MultiShop.Web.Areas.Admin.Pages.Brand.UpdateBrandModel
+
+@{
+    ViewData["Title"] = "UpdateBrand";
+    Layout = "~/Areas/Admin/Pages/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Marka Ekleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <form method="post">
+                        <input type="hidden" asp-for="Input.BrandId" />
+                        <label>Marka Adı</label>
+                        <input type="text" class="form-control" asp-for="Input.BrandName" />
+                        <br />
+                        <label>Marka Görsel</label>
+                        <input type="text" class="form-control" asp-for="Input.ImageUrl" />
+                        <br />
+                        <button class="btn btn-success">Markayı Güncelle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

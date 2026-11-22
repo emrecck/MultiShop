@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Discount.Coupons.Dtos;
 using MultiShop.Discount.Coupons.Services;
 
 namespace MultiShop.Discount.Coupons.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/coupons")]
 public sealed class CouponsController(ICouponService couponService) : ControllerBase

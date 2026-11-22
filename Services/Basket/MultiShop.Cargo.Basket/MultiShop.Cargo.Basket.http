@@ -1,0 +1,47 @@
+@MultiShop.Cargo.Basket_HostAddress = http://localhost:5147
+@AccessToken = YOUR_ACCESS_TOKEN
+
+GET {{MultiShop.Cargo.Basket_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+# Basket Endpoints (Authorization: Bearer token with BasketFullPermission scope)
+###
+
+GET {{MultiShop.Cargo.Basket_HostAddress}}/api/basket
+Authorization: Bearer {{AccessToken}}
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.Basket_HostAddress}}/api/basket
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "discountCode": "INDIRIM10",
+  "discountRate": 10,
+  "basketItems": [
+    {
+      "productId": "6740a1b2c3d4e5f607080901",
+      "productName": "Kablosuz Kulaklık",
+      "productImageUrl": "https://cdn.multishop.com/images/kulaklik.jpg",
+      "quantity": 2,
+      "price": 1250.00
+    },
+    {
+      "productId": "6740a1b2c3d4e5f607080902",
+      "productName": "Mekanik Klavye",
+      "productImageUrl": "https://cdn.multishop.com/images/klavye.jpg",
+      "quantity": 1,
+      "price": 2400.00
+    }
+  ]
+}
+
+###
+
+DELETE {{MultiShop.Cargo.Basket_HostAddress}}/api/basket
+Authorization: Bearer {{AccessToken}}
+
+###

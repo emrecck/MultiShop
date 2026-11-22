@@ -1,0 +1,25 @@
+@page "/Admin/User/UserAddressInfo/{id}"
+@model MultiShop.Web.Areas.Admin.Pages.User.UserAddressInfoModel
+@{
+    ViewData["Title"] = "UserAddressInfo";
+    Layout = "~/Areas/Admin/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <h3>Kullanıcı Adres ve İletişim Bilgisi</h3>
+                    <div class="alert alert-info">Kullanıcı Id:@Model.Input.cargoCustomerId</div>
+                    <div class="alert alert-warning">Kullanıcı Adı Soyadı:@Model.Input.name @Model.Input.surname</div>
+                    <div class="alert alert-info">Email Adresi: @Model.Input.email</div>
+                    <div class="alert alert-warning">Telefon: @Model.Input.phone</div>
+                    <div class="alert alert-info">İlçe-Şehir: @Model.Input.district @Model.Input.city</div>
+                    <div class="alert alert-warning">Adres: @Model.Input.address</div>            
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

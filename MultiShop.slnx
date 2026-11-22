@@ -1,5 +1,18 @@
 <Solution>
+  <Folder Name="/IdentityServer/">
+    <Project Path="IdentityServer/MultiShop.Identity/MultiShop.Identity.csproj" />
+  </Folder>
   <Folder Name="/Services/" />
+  <Folder Name="/Services/Basket/">
+    <Project Path="Services/Basket/MultiShop.Cargo.Basket/MultiShop.Cargo.Basket.csproj" Id="02a1940b-b577-4492-8aa4-cf9a745809de" />
+  </Folder>
+  <Folder Name="/Services/Cargo/">
+    <Project Path="Services/Cargo/MultiShop.Cargo.Caching/MultiShop.Cargo.Caching.csproj" />
+    <Project Path="Services/Cargo/MultiShop.Cargo.Domain/MultiShop.Cargo.Domain.csproj" />
+    <Project Path="Services/Cargo/MultiShop.Cargo.Repositories/MultiShop.Cargo.Repositories.csproj" />
+    <Project Path="Services/Cargo/MultiShop.Cargo.Services/MultiShop.Cargo.Services.csproj" />
+    <Project Path="Services/Cargo/MultiShop.Cargo.WebApi/MultiShop.Cargo.WebApi.csproj" />
+  </Folder>
   <Folder Name="/Services/Catalog/">
     <Project Path="Services/Catalog/MultiShop.Catalog/MultiShop.Catalog.csproj" />
   </Folder>
@@ -16,5 +29,9 @@
   </Folder>
   <Folder Name="/Services/Order/Presentation/">
     <Project Path="Services/Order/Presentation/MultiShop.Order/MultiShop.Order.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="../../../Downloads/MultiShop-master/MultiShop-master/Frontends/MultiShop.DtoLayer/MultiShop.DtoLayer.csproj" />
+    <Project Path="src/MultiShop.Web/MultiShop.Web.csproj" Id="08b48e57-9077-425b-81fd-d0fe95155ecf" />
   </Folder>
 </Solution>

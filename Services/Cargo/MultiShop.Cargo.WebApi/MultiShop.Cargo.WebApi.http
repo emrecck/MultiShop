@@ -1,0 +1,226 @@
+@MultiShop.Cargo.WebApi_HostAddress = http://localhost:5299
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+# Cargo Companies
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-companies
+Accept: application/json
+
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-companies/1
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-companies
+Content-Type: application/json
+
+{
+  "companyName": "Yurtiçi Kargo",
+  "companyEmail": "info@yurticikargo.com",
+  "companyPhoneNumber": "+90 212 444 99 99",
+  "companyAddress": "Maslak Mah. Büyükdere Cad. No:10 İstanbul"
+}
+
+###
+
+PUT {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-companies/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "companyName": "Yurtiçi Kargo A.Ş.",
+  "companyEmail": "destek@yurticikargo.com",
+  "companyPhoneNumber": "+90 212 444 99 99",
+  "companyAddress": "Maslak Mah. Büyükdere Cad. No:12 İstanbul",
+  "isActive": true
+}
+
+###
+
+DELETE {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-companies/1
+
+###
+# Cargo Details
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-details
+Accept: application/json
+
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-details/1
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-details
+Content-Type: application/json
+
+{
+  "cargoCustomerId": 1,
+  "cargoCompanyId": 1,
+  "trackingNumber": "TRK-2026-0001",
+  "description": "Elektronik ürün paketi",
+  "estimatedDeliveryDate": "2026-11-25T14:00:00Z",
+  "deliveredAt": "0001-01-01T00:00:00Z",
+  "isDelivered": false
+}
+
+###
+
+PUT {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-details/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "cargoCustomerId": 1,
+  "cargoCompanyId": 1,
+  "trackingNumber": "TRK-2026-0001",
+  "description": "Teslim edildi",
+  "estimatedDeliveryDate": "2026-11-25T14:00:00Z",
+  "deliveredAt": "2026-11-24T11:30:00Z",
+  "isDelivered": true,
+  "isActive": true
+}
+
+###
+
+DELETE {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-details/1
+
+###
+# Cargo Operations
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-operations
+Accept: application/json
+
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-operations/1
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-operations
+Content-Type: application/json
+
+{
+  "location": "İstanbul Aktarma Merkezi",
+  "targetLocation": "Ankara Şube"
+}
+
+###
+
+PUT {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-operations/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "location": "Ankara Dağıtım Merkezi",
+  "targetLocation": "Çankaya Şube",
+  "isActive": true
+}
+
+###
+
+DELETE {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-operations/1
+
+###
+# Cargo Receiver Customers
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-receiver-customers
+Accept: application/json
+
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-receiver-customers/1
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-receiver-customers
+Content-Type: application/json
+
+{
+  "name": "Ahmet Yılmaz",
+  "email": "ahmet.yilmaz@example.com",
+  "phoneNumber": "+90 532 111 22 33",
+  "district": "Çankaya",
+  "city": "Ankara",
+  "address": "Atatürk Bulvarı No:45 D:8"
+}
+
+###
+
+PUT {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-receiver-customers/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Ahmet Yılmaz",
+  "email": "ahmet.yilmaz@example.com",
+  "phoneNumber": "+90 532 111 22 44",
+  "district": "Yenimahalle",
+  "city": "Ankara",
+  "address": "İvedik Cad. No:12 D:3",
+  "isActive": true
+}
+
+###
+
+DELETE {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-receiver-customers/1
+
+###
+# Cargo Sender Customers
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-sender-customers
+Accept: application/json
+
+###
+
+GET {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-sender-customers/1
+Accept: application/json
+
+###
+
+POST {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-sender-customers
+Content-Type: application/json
+
+{
+  "name": "MultiShop Depo",
+  "email": "depo@multishop.com",
+  "phoneNumber": "+90 216 555 00 11",
+  "district": "Tuzla",
+  "city": "İstanbul",
+  "address": "Organize Sanayi Bölgesi 3. Cad. No:7"
+}
+
+###
+
+PUT {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-sender-customers/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "MultiShop Ana Depo",
+  "email": "depo@multishop.com",
+  "phoneNumber": "+90 216 555 00 22",
+  "district": "Tuzla",
+  "city": "İstanbul",
+  "address": "Organize Sanayi Bölgesi 5. Cad. No:14",
+  "isActive": true
+}
+
+###
+
+DELETE {{MultiShop.Cargo.WebApi_HostAddress}}/api/cargo-sender-customers/1
+
+###

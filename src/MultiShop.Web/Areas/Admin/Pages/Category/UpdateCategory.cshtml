@@ -1,0 +1,33 @@
+@page "/Admin/Category/UpdateCategory/{id}"
+@model MultiShop.Web.Areas.Admin.Pages.Category.UpdateCategoryModel
+
+@{
+    ViewData["Title"] = "UpdateCategory";
+    Layout = "~/Areas/Admin/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Kategori Güncelleme Sayfası</h4>
+                <br />
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <form method="post">
+                        <input type="hidden" asp-for="Input.CategoryID" />
+                        <label>Kategori Adı</label>
+                        <input type="text" class="form-control" asp-for="Input.CategoryName" />
+                        <br />
+                        <label>Kategori Görsel</label>
+                        <input type="text" class="form-control" asp-for="Input.ImageUrl" />
+                        <br />
+                        <button class="btn btn-primary">Kategoriyi Güncelle</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

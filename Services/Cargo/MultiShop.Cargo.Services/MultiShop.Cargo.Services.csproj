@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MultiShop.Cargo.Domain\MultiShop.Cargo.Domain.csproj" />
+    <ProjectReference Include="..\MultiShop.Cargo.Repositories\MultiShop.Cargo.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>

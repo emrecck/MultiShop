@@ -1,14 +1,17 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Order.Application.Features.Orders.Commands.Create;
 using MultiShop.Order.Application.Features.Orders.Commands.Delete;
 using MultiShop.Order.Application.Features.Orders.Commands.Update;
 using MultiShop.Order.Application.Features.Orders.Queries.Get;
+using MultiShop.Order.Application.Features.Orders.Queries.GetByCustomerId;
 using MultiShop.Order.Application.Features.Orders.Queries.GetById;
 
 namespace MultiShop.Order.Application.Features.Orders;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class OrdersController(ISender sender) : ControllerBase
@@ -18,6 +21,12 @@ public class OrdersController(ISender sender) : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<GetOrderQueryResult>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<GetOrderQueryResult>>> GetAll(CancellationToken cancellationToken)
         => Ok(await sender.Send(new GetOrderQuery(), cancellationToken));
+
+    [HttpGet("by-customer/{customerId:int}")]
+    [EndpointSummary("Get orders by customer ID")]
+    [ProducesResponseType(typeof(IEnumerable<GetOrderQueryResult>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<GetOrderQueryResult>>> GetByCustomerId(int customerId, CancellationToken cancellationToken)
+        => Ok(await sender.Send(new GetOrdersByCustomerIdQuery(customerId), cancellationToken));
 
     [HttpGet("{id:int}")]
     [EndpointSummary("Get an order by ID")]

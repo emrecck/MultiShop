@@ -15,10 +15,9 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var responseMessage = await _httpClient.GetAsync("api/brands");
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetBrandCount");
                 if (!responseMessage.IsSuccessStatusCode) return 0;
-                var items = await responseMessage.Content.ReadFromJsonAsync<List<object>>();
-                return items?.Count ?? 0;
+                return await responseMessage.Content.ReadFromJsonAsync<long>();
             }
             catch
             {
@@ -30,10 +29,9 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var responseMessage = await _httpClient.GetAsync("api/categories");
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetCategoryCount");
                 if (!responseMessage.IsSuccessStatusCode) return 0;
-                var items = await responseMessage.Content.ReadFromJsonAsync<List<object>>();
-                return items?.Count ?? 0;
+                return await responseMessage.Content.ReadFromJsonAsync<long>();
             }
             catch
             {
@@ -45,8 +43,10 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var products = await GetProductsAsync();
-                return products.OrderByDescending(x => x.ProductPrice).FirstOrDefault()?.ProductName ?? "-";
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetMaxPriceProductName");
+                if (!responseMessage.IsSuccessStatusCode) return "-";
+                var value = await responseMessage.Content.ReadAsStringAsync();
+                return string.IsNullOrWhiteSpace(value) ? "-" : value.Trim('"');
             }
             catch
             {
@@ -58,8 +58,10 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var products = await GetProductsAsync();
-                return products.OrderBy(x => x.ProductPrice).FirstOrDefault()?.ProductName ?? "-";
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetMinPriceProductName");
+                if (!responseMessage.IsSuccessStatusCode) return "-";
+                var value = await responseMessage.Content.ReadAsStringAsync();
+                return string.IsNullOrWhiteSpace(value) ? "-" : value.Trim('"');
             }
             catch
             {
@@ -71,8 +73,9 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var products = await GetProductsAsync();
-                return products.Count == 0 ? 0m : products.Average(x => x.ProductPrice);
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetProductAvgPrice");
+                if (!responseMessage.IsSuccessStatusCode) return 0m;
+                return await responseMessage.Content.ReadFromJsonAsync<decimal>();
             }
             catch
             {
@@ -84,20 +87,14 @@ namespace MultiShop.Web.Services.StatisticServices.CatalogStatisticServices
         {
             try
             {
-                var products = await GetProductsAsync();
-                return products.Count;
+                var responseMessage = await _httpClient.GetAsync("api/statistics/GetProductCount");
+                if (!responseMessage.IsSuccessStatusCode) return 0;
+                return await responseMessage.Content.ReadFromJsonAsync<long>();
             }
             catch
             {
                 return 0;
             }
-        }
-
-        private async Task<List<ResultProductDto>> GetProductsAsync()
-        {
-            var responseMessage = await _httpClient.GetAsync("api/products");
-            if (!responseMessage.IsSuccessStatusCode) return new List<ResultProductDto>();
-            return await responseMessage.Content.ReadFromJsonAsync<List<ResultProductDto>>() ?? new List<ResultProductDto>();
         }
     }
 }

@@ -82,15 +82,14 @@ namespace MultiShop.Web.Services.CatalogServices.ProductImageServices
         {
             try
             {
-                var responseMessage = await _httpClient.GetAsync("api/product-images");
+                var responseMessage = await _httpClient.GetAsync($"api/product-images/by-product/{id}");
                 if (!responseMessage.IsSuccessStatusCode)
                 {
                     return new GetByIdProductImageDto { ProductId = id };
                 }
 
-                var values = await responseMessage.Content.ReadFromJsonAsync<List<CatalogProductImageApiDto>>();
-                var match = values?.FirstOrDefault(x => string.Equals(x.ProductId, id, StringComparison.OrdinalIgnoreCase));
-                return match == null ? new GetByIdProductImageDto { ProductId = id } : MapToGetById(match);
+                var value = await responseMessage.Content.ReadFromJsonAsync<CatalogProductImageApiDto>();
+                return value == null ? new GetByIdProductImageDto { ProductId = id } : MapToGetById(value);
             }
             catch
             {

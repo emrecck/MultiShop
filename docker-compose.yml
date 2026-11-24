@@ -1,0 +1,54 @@
+services:
+  multishop.identity:
+    image: ${DOCKER_REGISTRY-}multishopidentity
+    build:
+      context: .
+      dockerfile: IdentityServer/MultiShop.Identity/Dockerfile
+
+  multishop.cargo.basket:
+    image: ${DOCKER_REGISTRY-}multishopcargobasket
+    build:
+      context: .
+      dockerfile: Services/Basket/MultiShop.Cargo.Basket/Dockerfile
+
+
+  multishop.cargo.webapi:
+    image: ${DOCKER_REGISTRY-}multishopcargowebapi
+    build:
+      context: .
+      dockerfile: Services/Cargo/MultiShop.Cargo.WebApi/Dockerfile
+
+
+  multishop.catalog:
+    image: ${DOCKER_REGISTRY-}multishopcatalog
+    build:
+      context: .
+      dockerfile: Services/Catalog/MultiShop.Catalog/Dockerfile
+
+
+  multishop.comments:
+    image: ${DOCKER_REGISTRY-}multishopcomments
+    build:
+      context: .
+      dockerfile: Services/Comments/MultiShop.Comments/Dockerfile
+
+
+  multishop.discount:
+    image: ${DOCKER_REGISTRY-}multishopdiscount
+    build:
+      context: .
+      dockerfile: Services/Discount/MultiShop.Discount/Dockerfile
+
+
+  multishop.order:
+    image: ${DOCKER_REGISTRY-}multishoporder
+    build:
+      context: .
+      dockerfile: Services/Order/Presentation/MultiShop.Order/Dockerfile
+
+  multishop.web:
+    image: ${DOCKER_REGISTRY-}multishopweb
+    build:
+      context: .
+      dockerfile: src/MultiShop.Web/Dockerfile
+

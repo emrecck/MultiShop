@@ -9,4 +9,5 @@ public class Category
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string Id { get; set; } = default!;
     public string Name { get; set; } = default!;
+    public string? ImageUrl { get; set; }
 }

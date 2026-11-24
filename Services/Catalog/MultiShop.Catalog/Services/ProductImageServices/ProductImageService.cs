@@ -53,6 +53,14 @@ public class ProductImageService : IProductImageService
         return productImage is null ? null : _mapper.ToGetByIdDto(productImage);
     }
 
+    public async Task<GetByIdProductImageDto?> GetProductImageByProductIdAsync(
+        string productId,
+        CancellationToken cancellationToken)
+    {
+        var productImage = await _productImages.Find(item => item.ProductId == productId).FirstOrDefaultAsync(cancellationToken);
+        return productImage is null ? null : _mapper.ToGetByIdDto(productImage);
+    }
+
     public async Task<bool> UpdateProductImageAsync(
         UpdateProductImageDto productImage,
         CancellationToken cancellationToken)

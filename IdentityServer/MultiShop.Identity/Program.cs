@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MultiShop.Identity.Models;
 using MultiShop.Identity.Services.BackgroundServices;
@@ -13,7 +14,10 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseOpenIddict();
 });
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<IdentityContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddOpenIddict()
 .AddCore(options =>
@@ -25,25 +29,28 @@ builder.Services.AddOpenIddict()
 {
     options.SetTokenEndpointUris("/connect/token")
     .SetAuthorizationEndpointUris("/connect/authorize")
-    .SetUserInfoEndpointUris("/connect/userinfo");
+    .SetUserInfoEndpointUris("/connect/userinfo")
+    .SetEndSessionEndpointUris("/connect/logout");
 
-
-
-    options.AllowClientCredentialsFlow().AllowAuthorizationCodeFlow().RequireProofKeyForCodeExchange();
-
-
+    options.AllowClientCredentialsFlow()
+           .AllowPasswordFlow()
+           .AllowRefreshTokenFlow()
+           .AllowAuthorizationCodeFlow()
+           .RequireProofKeyForCodeExchange();
 
     options.RegisterScopes(
         OpenIddictConstants.Scopes.OpenId,
         OpenIddictConstants.Scopes.Profile,
         OpenIddictConstants.Scopes.Email,
+        OpenIddictConstants.Scopes.OfflineAccess,
         "CatalogFullPermission",
         "CatalogReadPermission",
         "OrderFullPermission",
         "DiscountFullPermission",
         "DiscountReadPermission",
         "CargoFullPermission",
-        "BasketFullPermission"
+        "BasketFullPermission",
+        "CommentFullPermission"
     );
 
     // Local geliştirme için imzalama ve şifreleme sertifikaları
@@ -51,16 +58,14 @@ builder.Services.AddOpenIddict()
            .AddDevelopmentSigningCertificate();
 
 
-    // ÖNEMLİ: OpenIddict varsayılan olarak Access Token'ı şifreler (JWE).
-    // Diğer mikroservislerin standart AddJwtBearer ile token'ı okuyabilmesi için
-    // geliştirme aşamasında şifrelemeyi kapatıp imzalı JWT (JWS) üretmesini sağlıyoruz.
     options.DisableAccessTokenEncryption();
 
 
     options.UseAspNetCore()
         .EnableAuthorizationEndpointPassthrough()
         .EnableTokenEndpointPassthrough()
-        .EnableUserInfoEndpointPassthrough();
+        .EnableUserInfoEndpointPassthrough()
+        .EnableEndSessionEndpointPassthrough();
 })
 .AddValidation(options =>
 {

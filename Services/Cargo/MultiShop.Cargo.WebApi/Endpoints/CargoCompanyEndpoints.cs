@@ -10,7 +10,8 @@ public static class CargoCompanyEndpoints
     public static IEndpointRouteBuilder MapCargoCompanyEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/cargo-companies")
-            .WithTags("CargoCompanies");
+            .WithTags("CargoCompanies")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ICargoCompanyService service, CancellationToken cancellationToken) =>
             TypedResults.Ok(await service.GetAllAsync(cancellationToken)))
@@ -25,8 +26,7 @@ public static class CargoCompanyEndpoints
             return company is null ? TypedResults.NotFound() : TypedResults.Ok(company);
         })
         .WithName("GetCargoCompanyById")
-        .WithSummary("Get a cargo company by ID")
-        .RequireAuthorization();
+        .WithSummary("Get a cargo company by ID");
 
         group.MapPost("/", async (CreateCargoCompanyDto dto, ICargoCompanyService service) =>
         {

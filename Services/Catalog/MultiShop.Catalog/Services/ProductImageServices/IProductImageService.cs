@@ -6,6 +6,7 @@ public interface IProductImageService
 {
     Task<IEnumerable<ResultProductImageDto>> GetAllProductImagesAsync(CancellationToken cancellationToken);
     Task<GetByIdProductImageDto?> GetProductImageByIdAsync(string id, CancellationToken cancellationToken);
+    Task<GetByIdProductImageDto?> GetProductImageByProductIdAsync(string productId, CancellationToken cancellationToken);
     Task<string> CreateProductImageAsync(CreateProductImageDto productImage, CancellationToken cancellationToken);
     Task<bool> UpdateProductImageAsync(UpdateProductImageDto productImage, CancellationToken cancellationToken);
     Task<bool> DeleteProductImageAsync(string id, CancellationToken cancellationToken);

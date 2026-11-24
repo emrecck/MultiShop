@@ -46,6 +46,7 @@ namespace MultiShop.Web.Services.Concrete
             {
                 ClientId = _clientSettings.MultiShopVisitorClient.ClientId,
                 ClientSecret = _clientSettings.MultiShopVisitorClient.ClientSecret,
+                Scope = "CatalogFullPermission CatalogReadPermission DiscountReadPermission CommentFullPermission",
                 Address = discoveryEndPoint.TokenEndpoint
             };
 

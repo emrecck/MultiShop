@@ -18,7 +18,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         // Token'ı üreten Identity projenizin adresi
-        options.Authority = "https://localhost:5166";
+        options.Authority = "https://localhost:7046";
 
         // Bu mikroservisin Resource adı (Seeder'daki Resources ile birebir eşleşmeli)
         options.Audience = "ResourceDiscount";

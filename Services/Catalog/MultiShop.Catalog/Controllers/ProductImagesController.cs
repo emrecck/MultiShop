@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Catalog.Dtos.ProductImageDtos;
 using MultiShop.Catalog.Services.ProductImageServices;
 
 namespace MultiShop.Catalog.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/product-images")]
 public sealed class ProductImagesController : ControllerBase
@@ -34,6 +36,18 @@ public sealed class ProductImagesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var productImage = await _productImageService.GetProductImageByIdAsync(id, cancellationToken);
+        return productImage is null ? NotFound() : Ok(productImage);
+    }
+
+    [HttpGet("by-product/{productId}")]
+    [EndpointSummary("Get a product image by product ID")]
+    [ProducesResponseType(typeof(GetByIdProductImageDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetByIdProductImageDto>> GetByProductId(
+        string productId,
+        CancellationToken cancellationToken)
+    {
+        var productImage = await _productImageService.GetProductImageByProductIdAsync(productId, cancellationToken);
         return productImage is null ? NotFound() : Ok(productImage);
     }
 

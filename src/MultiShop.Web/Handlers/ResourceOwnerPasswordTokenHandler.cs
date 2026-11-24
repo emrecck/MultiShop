@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MultiShop.Web.Services.Interfaces;
@@ -20,25 +19,32 @@ namespace MultiShop.Web.Handlers
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var httpContext = _httpContextAccessor.HttpContext;
+            var accessToken = httpContext != null
+                ? await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
+                : null;
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
+
             var response = await base.SendAsync(request, cancellationToken);
 
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized && httpContext != null)
             {
-                var tokenResponse = await _identityService.GetRefreshToken();
-
-                if (tokenResponse != null)
+                var refreshed = await _identityService.GetRefreshToken();
+                if (refreshed)
                 {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                    response = await base.SendAsync(request, cancellationToken);
+                    var newAccessToken = await httpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+                    if (!string.IsNullOrEmpty(newAccessToken))
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newAccessToken);
+                        response = await base.SendAsync(request, cancellationToken);
+                    }
                 }
             }
 
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                //hata mesajı
-            }
             return response;
         }
     }

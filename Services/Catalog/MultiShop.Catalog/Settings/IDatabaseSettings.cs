@@ -10,4 +10,11 @@ public interface IDatabaseSettings
     string CategoryCollectionName { get; set; }
     string ProductDetailCollectionName { get; set; }
     string ProductImageCollectionName { get; set; }
+    string AboutCollectionName { get; set; }
+    string BrandCollectionName { get; set; }
+    string ContactCollectionName { get; set; }
+    string FeatureCollectionName { get; set; }
+    string FeatureSliderCollectionName { get; set; }
+    string OfferDiscountCollectionName { get; set; }
+    string SpecialOfferCollectionName { get; set; }
 }

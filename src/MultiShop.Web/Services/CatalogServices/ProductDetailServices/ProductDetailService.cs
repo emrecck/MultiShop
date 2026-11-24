@@ -83,20 +83,21 @@ namespace MultiShop.Web.Services.CatalogServices.ProductDetailServices
 
         public async Task<GetByIdProductDetailDto> GetByProductIdProductDetailAsync(string id)
         {
-            var allDetails = await GetAllProductDetailAsync();
-            var match = allDetails.FirstOrDefault(x => string.Equals(x.ProductId, id, StringComparison.OrdinalIgnoreCase));
-            if (match == null)
+            try
+            {
+                var responseMessage = await _httpClient.GetAsync($"api/product-details/by-product/{id}");
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    return new GetByIdProductDetailDto { ProductId = id };
+                }
+
+                var value = await responseMessage.Content.ReadFromJsonAsync<CatalogProductDetailApiDto>();
+                return value == null ? new GetByIdProductDetailDto { ProductId = id } : MapToGetById(value);
+            }
+            catch
             {
                 return new GetByIdProductDetailDto { ProductId = id };
             }
-
-            return new GetByIdProductDetailDto
-            {
-                ProductDetailId = match.ProductDetailId,
-                ProductDescription = match.ProductDescription,
-                ProductInfo = match.ProductInfo,
-                ProductId = match.ProductId
-            };
         }
 
         private static GetByIdProductDetailDto MapToGetById(CatalogProductDetailApiDto value) => new()

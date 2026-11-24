@@ -29,6 +29,34 @@ public sealed class CouponsController(ICouponService couponService) : Controller
         return coupon is null ? NotFound() : Ok(coupon);
     }
 
+    [HttpGet("by-code/{code}")]
+    [EndpointSummary("Get a coupon by code")]
+    [ProducesResponseType(typeof(GetByIdCouponDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<GetByIdCouponDto>> GetByCode(string code, CancellationToken cancellationToken)
+    {
+        var coupon = await couponService.GetCouponByCodeAsync(code, cancellationToken);
+        return coupon is null ? NotFound() : Ok(coupon);
+    }
+
+    [HttpGet("rate/{code}")]
+    [EndpointSummary("Get discount rate by coupon code")]
+    [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+    public async Task<ActionResult<decimal>> GetRateByCode(string code, CancellationToken cancellationToken)
+    {
+        var rate = await couponService.GetCouponRateByCodeAsync(code, cancellationToken);
+        return Ok(rate);
+    }
+
+    [HttpGet("count")]
+    [EndpointSummary("Get total coupon count")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    public async Task<ActionResult<int>> GetCount(CancellationToken cancellationToken)
+    {
+        var count = await couponService.GetCouponCountAsync(cancellationToken);
+        return Ok(count);
+    }
+
     [HttpPost]
     [EndpointSummary("Create a coupon")]
     [ProducesResponseType(typeof(GetByIdCouponDto), StatusCodes.Status201Created)]

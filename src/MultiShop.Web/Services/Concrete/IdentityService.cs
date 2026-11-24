@@ -10,26 +10,16 @@ using System.Security.Claims;
 
 namespace MultiShop.Web.Services.Concrete
 {
-    public class IdentityService : IIdentityService
+    public class IdentityService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings) : IIdentityService
     {
-        private readonly HttpClient _httpClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ClientSettings _clientSettings;
-        private readonly ServiceApiSettings _serviceApiSettings;
-
-        public IdentityService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings)
-        {
-            _httpClient = httpClient;
-            _httpContextAccessor = httpContextAccessor;
-            _clientSettings = clientSettings.Value;
-            _serviceApiSettings = serviceApiSettings.Value;
-        }
+        private readonly ClientSettings _clientSettings = clientSettings.Value;
+        private readonly ServiceApiSettings _serviceApiSettings = serviceApiSettings.Value;
 
         public async Task<bool> GetRefreshToken()
         {
-            if (_httpContextAccessor.HttpContext == null) return false;
+            if (httpContextAccessor.HttpContext == null) return false;
 
-            var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            var discoveryEndPoint = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
                 Address = _serviceApiSettings.IdentityServerUrl,
                 Policy = new DiscoveryPolicy
@@ -43,7 +33,7 @@ namespace MultiShop.Web.Services.Concrete
                 return false;
             }
 
-            var refreshToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+            var refreshToken = await httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
             if (string.IsNullOrEmpty(refreshToken)) return false;
 
             RefreshTokenRequest refreshTokenRequest = new()
@@ -54,7 +44,7 @@ namespace MultiShop.Web.Services.Concrete
                 Address = discoveryEndPoint.TokenEndpoint
             };
 
-            var token = await _httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
+            var token = await httpClient.RequestRefreshTokenAsync(refreshTokenRequest);
             if (token.IsError || string.IsNullOrEmpty(token.AccessToken))
             {
                 return false;
@@ -79,22 +69,22 @@ namespace MultiShop.Web.Services.Concrete
                 }
             };
 
-            var result = await _httpContextAccessor.HttpContext.AuthenticateAsync();
+            var result = await httpContextAccessor.HttpContext.AuthenticateAsync();
             if (!result.Succeeded || result.Principal == null) return false;
 
             var properties = result.Properties ?? new AuthenticationProperties();
             properties.StoreTokens(authenticationToken);
 
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result.Principal, properties);
+            await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, result.Principal, properties);
 
             return true;
         }
 
         public async Task<bool> SignIn(SignInDto signInDto)
         {
-            if (_httpContextAccessor.HttpContext == null) return false;
+            if (httpContextAccessor.HttpContext == null) return false;
 
-            var discoveryEndPoint = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            var discoveryEndPoint = await httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
                 Address = _serviceApiSettings.IdentityServerUrl,
                 Policy = new DiscoveryPolicy
@@ -117,7 +107,7 @@ namespace MultiShop.Web.Services.Concrete
                 Address = discoveryEndPoint.TokenEndpoint
             };
 
-            var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+            var token = await httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
             if (token.IsError || string.IsNullOrEmpty(token.AccessToken))
             {
                 return false;
@@ -129,7 +119,7 @@ namespace MultiShop.Web.Services.Concrete
                 Address = discoveryEndPoint.UserInfoEndpoint
             };
 
-            var userValues = await _httpClient.GetUserInfoAsync(userInfoRequest);
+            var userValues = await httpClient.GetUserInfoAsync(userInfoRequest);
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
 
@@ -158,7 +148,7 @@ namespace MultiShop.Web.Services.Concrete
 
             authenticationProperties.IsPersistent = false;
 
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
+            await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
 
             return true;
         }

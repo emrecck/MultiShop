@@ -33,7 +33,7 @@ public class ClientCredentialsTokenHandler : DelegatingHandler
             return cachedToken;
 
         var client = _httpClientFactory.CreateClient();
-        var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://localhost:5166/connect/token")
+        var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7046/connect/token")
         {
             Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {

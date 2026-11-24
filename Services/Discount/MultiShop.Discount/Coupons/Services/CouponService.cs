@@ -34,6 +34,32 @@ public sealed class CouponService(DapperContext context) : ICouponService
                 cancellationToken: cancellationToken));
     }
 
+    public async Task<GetByIdCouponDto?> GetCouponByCodeAsync(string code, CancellationToken cancellationToken)
+    {
+        using var connection = context.CreateConnection();
+        return await connection.QuerySingleOrDefaultAsync<GetByIdCouponDto>(
+            new CommandDefinition(
+                $"{CouponSelect} WHERE LOWER(Code) = LOWER(@Code)",
+                new { Code = code },
+                cancellationToken: cancellationToken));
+    }
+
+    public async Task<decimal> GetCouponRateByCodeAsync(string code, CancellationToken cancellationToken)
+    {
+        var coupon = await GetCouponByCodeAsync(code, cancellationToken);
+        if (coupon is null || !coupon.IsActive || coupon.ExpirationDate < DateTimeOffset.UtcNow)
+            return 0m;
+
+        return coupon.DiscountAmount;
+    }
+
+    public async Task<int> GetCouponCountAsync(CancellationToken cancellationToken)
+    {
+        using var connection = context.CreateConnection();
+        return await connection.ExecuteScalarAsync<int>(
+            new CommandDefinition("SELECT COUNT(1) FROM Coupons", cancellationToken: cancellationToken));
+    }
+
     public async Task<GetByIdCouponDto> CreateCouponAsync(
         CreateCouponDto coupon,
         CancellationToken cancellationToken)

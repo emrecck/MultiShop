@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using MultiShop.Web.Handlers;
 using MultiShop.Web.Services.BasketServices;
 using MultiShop.Web.Services.CargoServices.CargoCompanyServices;
@@ -31,25 +32,54 @@ using MultiShop.Web.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
-    {
-        opt.LoginPath = "/Login/Index/";
-        opt.ExpireTimeSpan = TimeSpan.FromDays(5);
-        opt.Cookie.Name = "MultiShopCookie";
-        opt.SlidingExpiration = true;
-    })
-    .AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
-    {
-        opt.LoginPath = "/Login/Index/";
-        opt.LogoutPath = "/Login/LogOut/";
-        opt.AccessDeniedPath = "/Pages/AccessDenied/";
-        opt.Cookie.HttpOnly = true;
-        opt.Cookie.SameSite = SameSiteMode.Strict;
-        opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-        opt.Cookie.Name = "MultiShopJwt";
-    });
+var values = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>() ?? new ServiceApiSettings();
+var clientSettings = builder.Configuration.GetSection("ClientSettings").Get<ClientSettings>() ?? new ClientSettings();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
+{
+    opt.LoginPath = "/Login/Index";
+    opt.LogoutPath = "/Login/Logout";
+    opt.AccessDeniedPath = "/AccessDenied";
+    opt.ExpireTimeSpan = TimeSpan.FromDays(5);
+    opt.SlidingExpiration = true;
+    opt.Cookie.Name = "MultiShopCookie";
+    opt.Cookie.HttpOnly = true;
+    opt.Cookie.SameSite = SameSiteMode.Strict;
+    opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+})
+.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    options.Authority = values.IdentityServerUrl;
+    options.ClientId = clientSettings.MultiShopManagerClient.ClientId;
+    options.ClientSecret = clientSettings.MultiShopManagerClient.ClientSecret;
+    options.ResponseType = OpenIdConnectResponseType.Code;
+    options.UsePkce = true;
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+    options.RequireHttpsMetadata = false;
+    options.MapInboundClaims = false;
+
+    options.Scope.Clear();
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
+    options.Scope.Add("email");
+    options.Scope.Add("offline_access");
+    options.Scope.Add("CatalogFullPermission");
+    options.Scope.Add("CatalogReadPermission");
+    options.Scope.Add("OrderFullPermission");
+    options.Scope.Add("DiscountFullPermission");
+    options.Scope.Add("DiscountReadPermission");
+    options.Scope.Add("CargoFullPermission");
+    options.Scope.Add("BasketFullPermission");
+    options.Scope.Add("CommentFullPermission");
+});
+
+builder.Services.AddAuthorization();
 builder.Services.AddAccessTokenManagement();
 builder.Services.AddHttpContextAccessor();
 
@@ -57,7 +87,16 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddHttpClient<IIdentityService, IdentityService>();
 
 builder.Services.AddHttpClient();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeAreaFolder("Admin", "/");
+    options.Conventions.AuthorizeAreaFolder("User", "/");
+    options.Conventions.AuthorizeFolder("/ShoppingCart");
+    options.Conventions.AuthorizeFolder("/Discount");
+    options.Conventions.AuthorizeFolder("/Order");
+    options.Conventions.AuthorizeFolder("/Payment");
+    options.Conventions.AuthorizeFolder("/User");
+});
 
 builder.Services.Configure<ClientSettings>(builder.Configuration.GetSection("ClientSettings"));
 builder.Services.Configure<ServiceApiSettings>(builder.Configuration.GetSection("ServiceApiSettings"));
@@ -66,8 +105,6 @@ builder.Services.AddScoped<ResourceOwnerPasswordTokenHandler>();
 builder.Services.AddScoped<ClientCredentialTokenHandler>();
 
 builder.Services.AddHttpClient<IClientCredentialTokenService, ClientCredentialTokenService>();
-
-var values = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>() ?? new ServiceApiSettings();
 
 builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {

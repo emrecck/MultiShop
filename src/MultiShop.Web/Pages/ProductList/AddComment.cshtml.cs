@@ -23,12 +23,20 @@ namespace MultiShop.Web.Pages.ProductList
 
         public async Task<IActionResult> OnPostAsync()
         {
-            Input.ImageUrl = "test";
-            Input.Rating = 1;
-            Input.CreatedDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+            Input.ImageUrl = string.IsNullOrWhiteSpace(Input.ImageUrl)
+                ? "/online-shop-website-template/img/user.jpg"
+                : Input.ImageUrl;
+            Input.Rating = Math.Clamp(Input.Rating, 1, 5);
+            Input.CreatedDate = DateTime.UtcNow;
             Input.Status = false;
             await _commentService.CreateCommentAsync(Input);
-            return RedirectToPage("/Default/Index");
+
+            if (!string.IsNullOrWhiteSpace(Input.ProductId))
+            {
+                return RedirectToPage("/ProductList/ProductDetail", null, new { id = Input.ProductId }, "tab-pane-3");
+            }
+
+            return RedirectToPage("/ProductList/ProductDetail");
         }
     }
 }

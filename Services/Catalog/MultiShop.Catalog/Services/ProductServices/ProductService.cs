@@ -45,6 +45,14 @@ public class ProductService : IProductService
         return products.Select(product => _mapper.ToResultDto(product));
     }
 
+    public async Task<IEnumerable<ResultProductDto>> GetProductsByCategoryIdAsync(
+        string categoryId,
+        CancellationToken cancellationToken)
+    {
+        var products = await _products.Find(x => x.CategoryId == categoryId).ToListAsync(cancellationToken);
+        return products.Select(product => _mapper.ToResultDto(product));
+    }
+
     public async Task<GetByIdProductDto?> GetProductByIdAsync(
         string id,
         CancellationToken cancellationToken)

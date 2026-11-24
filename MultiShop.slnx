@@ -16,6 +16,9 @@
   <Folder Name="/Services/Catalog/">
     <Project Path="Services/Catalog/MultiShop.Catalog/MultiShop.Catalog.csproj" />
   </Folder>
+  <Folder Name="/Services/Comments/">
+    <Project Path="Services/Comments/MultiShop.Comments/MultiShop.Comments.csproj" Id="920ae25b-ebcc-4bae-beba-ecc2e440146b" />
+  </Folder>
   <Folder Name="/Services/Discount/">
     <Project Path="Services/Discount/MultiShop.Discount/MultiShop.Discount.csproj" />
   </Folder>
@@ -31,7 +34,10 @@
     <Project Path="Services/Order/Presentation/MultiShop.Order/MultiShop.Order.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="../../../Downloads/MultiShop-master/MultiShop-master/Frontends/MultiShop.DtoLayer/MultiShop.DtoLayer.csproj" />
+    <Project Path="src/MultiShop.DtoLayer/MultiShop.DtoLayer.csproj" />
     <Project Path="src/MultiShop.Web/MultiShop.Web.csproj" Id="08b48e57-9077-425b-81fd-d0fe95155ecf" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

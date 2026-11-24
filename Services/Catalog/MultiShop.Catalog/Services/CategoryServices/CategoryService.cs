@@ -60,7 +60,8 @@ public class CategoryService : ICategoryService
     {
         var filter = Builders<Category>.Filter.Eq(c => c.Id, category.Id);
         var update = Builders<Category>.Update
-            .Set(c => c.Name, category.Name);
+            .Set(c => c.Name, category.Name)
+            .Set(c => c.ImageUrl, category.ImageUrl);
         var result = await _categories.UpdateOneAsync(
             filter,
             update,

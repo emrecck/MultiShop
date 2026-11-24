@@ -9,7 +9,8 @@ public static class CargoDetailEndpoints
     public static IEndpointRouteBuilder MapCargoDetailEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/cargo-details")
-            .WithTags("CargoDetails");
+            .WithTags("CargoDetails")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ICargoDetailService service, CancellationToken cancellationToken) =>
             TypedResults.Ok(await service.GetAllAsync(cancellationToken)))

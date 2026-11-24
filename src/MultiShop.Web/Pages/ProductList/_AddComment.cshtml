@@ -1,32 +1,95 @@
 <div class="col-md-6">
     <h4 class="mb-4">Bir Yorum Bırakın</h4>
     <small>Yorumunuzun alınması için geçerli bir email adresi giriniz.*</small>
-    <div class="d-flex my-3">
+    <div class="d-flex my-3 align-items-center">
         <p class="mb-0 mr-2">Ürün puanınız * :</p>
-        <div class="text-primary">
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
+        <div id="rating-stars" class="text-primary" style="cursor: pointer;">
+            <i class="far fa-star rating-star" data-value="1"></i>
+            <i class="far fa-star rating-star" data-value="2"></i>
+            <i class="far fa-star rating-star" data-value="3"></i>
+            <i class="far fa-star rating-star" data-value="4"></i>
+            <i class="far fa-star rating-star" data-value="5"></i>
         </div>
+        <small id="rating-text" class="ml-2 text-muted">(Lütfen puan seçin)</small>
     </div>
-    <form method="post" asp-page="/ProductList/AddComment">
+    <form id="add-comment-form" method="post" asp-page="/ProductList/AddComment">
         <input type="hidden" name="Input.ProductId" value="@ViewBag.x" />
+        <input type="hidden" id="comment-rating-input" name="Input.Rating" value="0" />
         <div class="form-group">
             <label for="name">Adınız soyadınız *</label>
-            <input type="text" class="form-control" id="name" name="Input.NameSurname">
+            <input type="text" class="form-control" id="name" name="Input.NameSurname" required>
         </div>
         <div class="form-group">
             <label for="email">Email adresiniz *</label>
-            <input type="email" class="form-control" id="email" name="Input.Email">
+            <input type="email" class="form-control" id="email" name="Input.Email" required>
         </div>
         <div class="form-group">
             <label for="message">Yorumunuz *</label>
-            <textarea id="message" cols="30" rows="5" class="form-control" name="Input.CommentDetail"></textarea>
+            <textarea id="message" cols="30" rows="5" class="form-control" name="Input.CommentDetail" required></textarea>
         </div>
         <div class="form-group mb-0">
             <input type="submit" value="Yorum Yap" class="btn btn-primary px-3">
         </div>
     </form>
 </div>
+
+<script>
+    (function () {
+        const container = document.getElementById('rating-stars');
+        const ratingInput = document.getElementById('comment-rating-input');
+        const ratingText = document.getElementById('rating-text');
+        const form = document.getElementById('add-comment-form');
+        if (!container || !(ratingInput instanceof HTMLInputElement)) return;
+
+        const stars = container.querySelectorAll('.rating-star');
+        let selectedRating = 0;
+
+        function renderStars(value = 0) {
+            stars.forEach(function (star) {
+                const starVal = parseInt(star.getAttribute('data-value') || '0', 10);
+                if (starVal <= value) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        stars.forEach(function (star) {
+            star.addEventListener('mouseenter', function () {
+                const hoverVal = parseInt(star.getAttribute('data-value') || '0', 10);
+                renderStars(hoverVal);
+            });
+
+            star.addEventListener('click', function () {
+                selectedRating = parseInt(star.getAttribute('data-value') || '0', 10);
+                ratingInput.value = String(selectedRating);
+                renderStars(selectedRating);
+                if (ratingText) {
+                    ratingText.textContent = '(' + selectedRating + ' / 5)';
+                    ratingText.classList.remove('text-danger');
+                    ratingText.classList.add('text-muted');
+                }
+            });
+        });
+
+        container.addEventListener('mouseleave', function () {
+            renderStars(selectedRating);
+        });
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (parseInt(ratingInput.value || '0', 10) < 1) {
+                    e.preventDefault();
+                    if (ratingText) {
+                        ratingText.textContent = '(Lütfen 1-5 arası puan seçiniz)';
+                        ratingText.classList.remove('text-muted');
+                        ratingText.classList.add('text-danger');
+                    }
+                }
+            });
+        }
+    })();
+</script>

@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MultiShop.Catalog.Dtos.ProductDtos;
 using MultiShop.Catalog.Services.ProductServices;
 
 namespace MultiShop.Catalog.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/products")]
 public sealed class ProductsController : ControllerBase
@@ -22,6 +24,17 @@ public sealed class ProductsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ResultProductDto>>> GetAll(CancellationToken cancellationToken)
     {
         var products = await _productService.GetAllProductsAsync(cancellationToken);
+        return Ok(products);
+    }
+
+    [HttpGet("by-category/{categoryId}")]
+    [EndpointSummary("Get products by category ID")]
+    [ProducesResponseType(typeof(IEnumerable<ResultProductDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ResultProductDto>>> GetByCategoryId(
+        string categoryId,
+        CancellationToken cancellationToken)
+    {
+        var products = await _productService.GetProductsByCategoryIdAsync(categoryId, cancellationToken);
         return Ok(products);
     }
 

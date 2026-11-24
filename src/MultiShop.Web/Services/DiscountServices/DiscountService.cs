@@ -15,18 +15,13 @@ namespace MultiShop.Web.Services.DiscountServices
         {
             try
             {
-                var responseMessage = await _httpClient.GetAsync("api/coupons");
+                var responseMessage = await _httpClient.GetAsync($"api/coupons/by-code/{Uri.EscapeDataString(code)}");
                 if (!responseMessage.IsSuccessStatusCode)
                 {
                     return new GetDiscountCodeDetailByCode();
                 }
 
-                var coupons = await responseMessage.Content.ReadFromJsonAsync<List<CouponApiDto>>();
-                var match = coupons?.FirstOrDefault(x =>
-                    x.IsActive &&
-                    x.ExpirationDate >= DateTimeOffset.UtcNow &&
-                    string.Equals(x.Code, code, StringComparison.OrdinalIgnoreCase));
-
+                var match = await responseMessage.Content.ReadFromJsonAsync<CouponApiDto>();
                 if (match == null)
                 {
                     return new GetDiscountCodeDetailByCode();
@@ -49,8 +44,21 @@ namespace MultiShop.Web.Services.DiscountServices
 
         public async Task<int> GetDiscountCouponCountRate(string code)
         {
-            var detail = await GetDiscountCode(code);
-            return detail.Rate;
+            try
+            {
+                var responseMessage = await _httpClient.GetAsync($"api/coupons/rate/{Uri.EscapeDataString(code)}");
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    return 0;
+                }
+
+                var rate = await responseMessage.Content.ReadFromJsonAsync<decimal>();
+                return (int)rate;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         private sealed record CouponApiDto(

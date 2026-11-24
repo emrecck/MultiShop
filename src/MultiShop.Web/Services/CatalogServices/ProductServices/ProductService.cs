@@ -118,13 +118,57 @@ namespace MultiShop.Web.Services.CatalogServices.ProductServices
 
         public async Task<List<ResultProductWithCategoryDto>> GetProductsWithCategoryByCatetegoryIdAsync(string CategoryId)
         {
-            var all = await GetProductsWithCategoryAsync();
             if (string.IsNullOrWhiteSpace(CategoryId))
             {
-                return all;
+                return await GetProductsWithCategoryAsync();
             }
 
-            return all.Where(x => string.Equals(x.CategoryId, CategoryId, StringComparison.OrdinalIgnoreCase)).ToList();
+            try
+            {
+                var responseMessage = await _httpClient.GetAsync($"api/products/by-category/{CategoryId}");
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    return new List<ResultProductWithCategoryDto>();
+                }
+
+                var products = await responseMessage.Content.ReadFromJsonAsync<List<ResultProductDto>>() ?? new List<ResultProductDto>();
+                var categoriesResponse = await _httpClient.GetAsync("api/categories");
+                var categoryMap = new Dictionary<string, ResultCategoryDto>();
+
+                if (categoriesResponse.IsSuccessStatusCode)
+                {
+                    var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CatalogCategoryApiDto>>();
+                    if (categories != null)
+                    {
+                        foreach (var c in categories)
+                        {
+                            categoryMap[c.Id] = new ResultCategoryDto
+                            {
+                                CategoryID = c.Id,
+                                CategoryName = c.Name,
+                                ImageUrl = string.Empty
+                            };
+                        }
+                    }
+                }
+
+                return products.Select(p => new ResultProductWithCategoryDto
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    ProductPrice = p.ProductPrice,
+                    ProductImageUrl = p.ProductImageUrl,
+                    ProductDescription = p.ProductDescription,
+                    CategoryId = p.CategoryId,
+                    Category = categoryMap.TryGetValue(p.CategoryId ?? string.Empty, out var cat)
+                        ? cat
+                        : new ResultCategoryDto { CategoryID = p.CategoryId, CategoryName = string.Empty, ImageUrl = string.Empty }
+                }).ToList();
+            }
+            catch
+            {
+                return new List<ResultProductWithCategoryDto>();
+            }
         }
 
         private sealed class CatalogCategoryApiDto

@@ -9,7 +9,8 @@ public static class CargoSenderCustomerEndpoints
     public static IEndpointRouteBuilder MapCargoSenderCustomerEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/cargo-sender-customers")
-            .WithTags("CargoSenderCustomers");
+            .WithTags("CargoSenderCustomers")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ICargoSenderCustomerService service, CancellationToken cancellationToken) =>
             TypedResults.Ok(await service.GetAllAsync(cancellationToken)))

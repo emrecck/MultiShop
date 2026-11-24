@@ -16,18 +16,17 @@ namespace MultiShop.Web.Services.OrderServices.OrderOderingServices
         {
             try
             {
-                var responseMessage = await _httpClient.GetAsync("api/Orders");
+                var endpoint = int.TryParse(id, out var customerId)
+                    ? $"api/Orders/by-customer/{customerId}"
+                    : "api/Orders";
+
+                var responseMessage = await _httpClient.GetAsync(endpoint);
                 if (!responseMessage.IsSuccessStatusCode)
                 {
                     return new List<ResultOrderingByUserIdDto>();
                 }
 
                 var orders = await responseMessage.Content.ReadFromJsonAsync<List<OrderApiDto>>() ?? new List<OrderApiDto>();
-                if (int.TryParse(id, out var customerId))
-                {
-                    orders = orders.Where(x => x.CustomerId == customerId).ToList();
-                }
-
                 return orders.Select(x => new ResultOrderingByUserIdDto
                 {
                     OrderingId = x.Id,

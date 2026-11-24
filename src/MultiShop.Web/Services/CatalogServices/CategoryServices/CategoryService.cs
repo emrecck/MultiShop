@@ -15,7 +15,8 @@ namespace MultiShop.Web.Services.CatalogServices.CategoryServices
         {
             await _httpClient.PostAsJsonAsync("api/categories", new
             {
-                Name = createCategoryDto.CategoryName
+                Name = createCategoryDto.CategoryName,
+                ImageUrl = createCategoryDto.ImageUrl
             });
         }
 
@@ -42,7 +43,7 @@ namespace MultiShop.Web.Services.CatalogServices.CategoryServices
             {
                 CategoryID = value.Id,
                 CategoryName = value.Name,
-                ImageUrl = string.Empty
+                ImageUrl = value.ImageUrl ?? string.Empty
             };
         }
 
@@ -61,7 +62,7 @@ namespace MultiShop.Web.Services.CatalogServices.CategoryServices
                 {
                     CategoryID = x.Id,
                     CategoryName = x.Name,
-                    ImageUrl = string.Empty
+                    ImageUrl = x.ImageUrl ?? string.Empty
                 }).ToList() ?? new List<ResultCategoryDto>();
             }
             catch
@@ -75,7 +76,8 @@ namespace MultiShop.Web.Services.CatalogServices.CategoryServices
             await _httpClient.PutAsJsonAsync($"api/categories/{updateCategoryDto.CategoryID}", new
             {
                 Id = updateCategoryDto.CategoryID,
-                Name = updateCategoryDto.CategoryName
+                Name = updateCategoryDto.CategoryName,
+                ImageUrl = updateCategoryDto.ImageUrl
             });
         }
 
@@ -83,6 +85,7 @@ namespace MultiShop.Web.Services.CatalogServices.CategoryServices
         {
             public string Id { get; set; } = string.Empty;
             public string Name { get; set; } = string.Empty;
+            public string? ImageUrl { get; set; }
         }
     }
 }

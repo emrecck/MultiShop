@@ -34,3 +34,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.location.hash === '#tab-pane-3') {
+            const reviewTab = document.querySelector('a[href="#tab-pane-3"]');
+            if (reviewTab instanceof HTMLElement) {
+                reviewTab.click();
+            }
+        }
+    });
+</script>

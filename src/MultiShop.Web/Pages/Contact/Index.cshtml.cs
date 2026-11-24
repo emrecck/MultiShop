@@ -29,7 +29,7 @@ namespace MultiShop.Web.Pages.Contact
             Input.IsRead = false;
             Input.SendDate = DateTime.Now;
             await _contactService.CreateContactAsync(Input);
-            return RedirectToPage("/Default/Index");
+            return RedirectToPage("/");
         }
     }
 }

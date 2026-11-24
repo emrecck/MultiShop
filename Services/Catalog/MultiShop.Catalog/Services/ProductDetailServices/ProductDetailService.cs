@@ -53,6 +53,14 @@ public class ProductDetailService : IProductDetailService
         return productDetail is null ? null : _mapper.ToGetByIdDto(productDetail);
     }
 
+    public async Task<GetByIdProductDetailDto?> GetProductDetailByProductIdAsync(
+        string productId,
+        CancellationToken cancellationToken)
+    {
+        var productDetail = await _productDetails.Find(item => item.ProductId == productId).FirstOrDefaultAsync(cancellationToken);
+        return productDetail is null ? null : _mapper.ToGetByIdDto(productDetail);
+    }
+
     public async Task<bool> UpdateProductDetailAsync(
         UpdateProductDetailDto productDetail,
         CancellationToken cancellationToken)
